@@ -1,5 +1,10 @@
-setwd("C:/Users/Mike/Dropbox/R")
-rm(list=ls())
+
+# Produce wind speed density plot and fitted Weibull function for calywith wind data
+# at heights 46, 32 and 20 m.
+
+
+#setwd("C:/Users/Mike/Dropbox/R")
+rm(list=ls())#
 
 #install.packages("gridExtra")
 library(ggplot2)
@@ -20,19 +25,23 @@ names(v46d)[names(v46d) == 'data.46d.x'] <- 'v'
 names(v46d)[names(v46d) == 'data.46d.y'] <- 'y'
 rm(data.46dlist,data.46d)
 
-
+# fit the Weibull function. A is the Scale parameter, k is the shape parameter
 A=6.8
 k=2.6
 fit=nls(data=v46d,y~dweibull(v,scale=A46,shape=k46),start=list(A46=A,k46=k),trace=T)
 summary(fit)
+
+#Extract A, k and their errors from the list returned by the fit.
 
 A46<-summary(fit)$parameters[1,1]
 k46<-summary(fit)$parameters[2,1]
 sdA46<-summary(fit)$parameters[1,2]
 sdk46<-summary(fit)$parameters[2,2]
 
+#calculate the mean wind speed given A and k
 meanv46=A46*gamma(1/k46+1)
 
+#Add the Weibull curve and annotations to the wind speed density plot
 meanv46<-signif(meanv46,digits=3)
 A46<-signif(A46,digits=3)
 k46<-signif(k46,digits=3)
